@@ -121,7 +121,7 @@ async def atualizar_estoque(
 # Inativar produto
 
 @produtos_router.patch(
-    "/produtos/{produto_id}/inativar",
+    "/{produto_id}/inativar",
     description= "Para o usuário realizar a inativação de um produto",
     dependencies=[Depends(exigir_perfil(["ADMIN"]))]
 )
@@ -150,5 +150,5 @@ async def inativar_produto(
     session.commit()
 
     return {
-        "mensagem": f"Produto {produto.nome} inativado com sucesso"
+        "mensagem":f"O Produto: {produto.nome} foi inativado com sucesso"
     }

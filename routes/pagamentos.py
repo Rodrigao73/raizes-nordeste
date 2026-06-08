@@ -13,7 +13,7 @@ pagamentos_router = APIRouter(
 
 # Para realizar o pagamento
 
-@pagamentos_router.post("/realizar-pagamento/",
+@pagamentos_router.post("/realizar-pagamento",
     summary="Realizar Pagamento",
     description="AS FORMAS DE PAGAMENTOS ACEITAS SÃO: PIX, CARTAO_CREDITO, CARTAO_DEBITO, E DINHEIRO."
 )

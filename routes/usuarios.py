@@ -106,5 +106,5 @@ async def inativar_usuario(
     session.commit()
 
     return {
-        "mensagem": f"Usuário {usuario.email} inativado com sucesso"
+        "mensagem": f"O usuário: {usuario.email} foi inativado com sucesso"
     }
