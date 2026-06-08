@@ -62,9 +62,9 @@ pip install fastapi uvicorn sqlalchemy python-jose passlib bcrypt python-dotenv 
 
 Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
-SECRET_KEY=sua_chave_secreta_aqui
-ALGORITHM=HS256
-ACESS_TOKEN_EXPIRE_MINUTES=60
+SECRET_KEY=sua_chave_secreta_aqui  
+ALGORITHM=HS256  
+ACESS_TOKEN_EXPIRE_MINUTES=60  
 
 ---
 
@@ -130,7 +130,7 @@ POST /usuarios/criar-conta - Utilizado para criar as contas de usuários.
     {
         "nome": "Lucas",
         "email": "Lucas@example.com",
-	"senha": "123"
+	    "senha": "123",
         "perfil": "CLIENTE"
     }
 ]
@@ -141,9 +141,11 @@ POST /usuarios/criar-conta - Utilizado para criar as contas de usuários.
 PATCH /usuarios/{usuario_id}/inativar - Utilizado para administradores inativarem usuários.
 
 ``` json
-{
-  "mensagem": "O usuário: xxx@gmail.com foi inativado com sucesso"
-}
+[
+    {
+        "mensagem": "O usuário: rodrigo@gmail.com foi inativado com sucesso"
+    }
+]
 
 ```
 
@@ -155,7 +157,7 @@ POST /login/ - Utilizado para o usuário logar na sua conta
 [
     {
         "email": "Anna@example.com",
-	"senha": "456"
+	    "senha": "456"
     }
 ]
 ```
@@ -166,20 +168,20 @@ GET /produtos/listar-produtos - Utilizado para os usuários visualizarem o que t
 
 ```json
 [
-  {
-    "id": 1,
-    "nome": "Cuscuz",
-    "descricao": "Com ovo e manteiga",
-    "preco": 10,
-    "estoque": 30
-  },
-  {
-    "id": 2,
-    "nome": "Tapioca",
-    "descricao": "Com queijo",
-    "preco": 5,
-    "estoque": 10
-  }
+    {
+        "id": 1,
+        "nome": "Cuscuz",
+        "descricao": "Com ovo e manteiga",
+        "preco": 10,
+        "estoque": 30
+    },
+    {
+        "id": 2,
+        "nome": "Tapioca",
+        "descricao": "Com queijo",
+        "preco": 5,
+        "estoque": 10
+    }
 ]
 ```
 
@@ -189,12 +191,12 @@ POST /produtos/cadastrar-produto - Para os administradores cadastrarem novos pro
 
 ```json
 [
-  {
-  "nome": "Pão",
-  "descricao": "Com queijo e ovo",
-  "preco": 5,
-  "estoque":20
-  }
+    {
+        "nome": "Pão",
+        "descricao": "Com queijo e ovo",
+        "preco": 5,
+        "estoque":20
+    }
 ]
 ```
 
@@ -204,20 +206,22 @@ PATCH /produtos/{produto_id}/estoque - Para os gerentes e administradores atuali
 
 ```json
 [
-  {	
-  "mensagem": "Estoque atualizado",
-  "estoque_atual": 10
-  }
+    {	
+        "mensagem": "Estoque atualizado",
+        "estoque_atual": 10
+    }
 ]
 ```
 
 PATCH /produtos/{produto_id}/inativar - Para os administradores inativarem produtos que não serão mais utilizados.
 
 ``` json
-{
-  "mensagem": "O produto: Tapioca foi inativado com sucesso"
-}
+[
+    {
+        "mensagem": "O produto: Tapioca foi inativado com sucesso"
+    }
 ```
+]
 
 **GET PEDIDOS**
 
@@ -225,16 +229,16 @@ GET /pedidos/listar-pedidos - Utilizado para administradores listarem todos os p
 
 ```json
 [
-  {
-    "id": 1,
-    "usuario_id": 1,
-    "produto_id": 1,
-    "quantidade": 2,
-    "valor_total": 25.80,
-    "status": "AGUARDANDO_PAGAMENTO",
-    "canal": "APP",
-    "data": "2026-06-06 18:21:00"
-  }
+    {
+        "id": 1,
+        "usuario_id": 1,
+        "produto_id": 1,
+        "quantidade": 2,
+        "valor_total": 25.80,
+        "status": "AGUARDANDO_PAGAMENTO",
+        "canal": "APP",
+        "data": "2026-06-06 18:21:00"
+    }
 ]
 ```
 
@@ -244,16 +248,16 @@ POST /pedidos/criar-pedido - Utilizado para criar os pedidos no sistema.
 
 ```json
 [
-  {
-    "id": 1,
-    "usuario_id": 1,
-    "produto_id": 1,
-    "quantidade": 1,
-    "valor_total": 70,
-    "status": "ENTREGUE",
-    "canal": "APP",
-    "data": "2026-06-06 18:21:00"
-  }
+    {
+        "id": 1,
+        "usuario_id": 1,
+        "produto_id": 1,
+        "quantidade": 1,
+        "valor_total": 70,
+        "status": "ENTREGUE",
+        "canal": "APP",
+        "data": "2026-06-06 18:21:00"
+    }
 ]
 ```
 
@@ -263,12 +267,12 @@ PATCH /pedidos/{id_pedido}/status - Utilizado para administradores, usuários, g
 
 ```json
 [
-  {
-  "id_pedido": 5,
-  "status_anterior": "PRONTO",
-  "status_atual": "ENTREGUE",
-  "mensagem": "Status atualizado com sucesso"
-  }
+    {
+        "id_pedido": 5,
+        "status_anterior": "PRONTO",
+        "status_atual": "ENTREGUE",
+        "mensagem": "Status atualizado com sucesso"
+    }
 ]
 ```
 
@@ -278,15 +282,15 @@ POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
 
 ```json
 [
-  {
-  "id_pedido": 7,
-  "canal_pedido": "PICKUP",
-  "forma_pagamento": "PIX",
-  "valor_total": 20,
-  "status_pagamento": "APROVADO",
-  "status_pedido": "EM_PREPARACAO",
-  "mensagem": "Pagamento aprovado! Pedido em preparação."
-  }
+    {
+        "id_pedido": 7,
+        "canal_pedido": "PICKUP",
+        "forma_pagamento": "PIX",
+        "valor_total": 20,
+        "status_pagamento": "APROVADO",
+        "status_pedido": "EM_PREPARACAO",
+        "mensagem": "Pagamento aprovado! Pedido em preparação."
+    }
 ]
 ```
 ---
@@ -307,10 +311,10 @@ POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
 A API utiliza o FastAPI Secutiry para controle de autenticação. Os seguintes perfis estão disponíveis:
 
 ```bash
-CLIENTE - Criar pedido, listar próprios pedidos, realizar pagamento, cancelar próprio pedido 
-ADMIN - Acesso total — cadastrar produtos, listar usuários, atualizar estoque, gerenciar pedidos 
-GERENTE - Atualizar estoque e status de pedidos 
-COZINHA - Atualizar status de pedidos 
+CLIENTE - Criar pedido, listar próprios pedidos, realizar pagamento e cancelar próprio pedido.
+ADMIN - Acesso total — cadastrar produtos, listar usuários, atualizar estoque e gerenciar pedidos.
+GERENTE - Atualizar estoque e status de pedidos. 
+COZINHA - Atualizar status de pedidos. 
 ```
 
 ---
