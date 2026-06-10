@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from dependencies import verificar_token, pegar_sessao
+from dependencies import verificar_token, pegar_sessao, exigir_perfil
 from schemas import RealizarPagamento
 from models import Usuario, Pedido
 from constants import FORMAS_PAGAMENTO
@@ -15,12 +15,13 @@ pagamentos_router = APIRouter(
 
 @pagamentos_router.post("/realizar-pagamento",
     summary="Realizar Pagamento",
+    dependencies=[Depends(exigir_perfil(["CLIENTE"]))],
     description="AS FORMAS DE PAGAMENTOS ACEITAS SÃO: PIX, CARTAO_CREDITO, CARTAO_DEBITO, E DINHEIRO."
 )
 async def realizar_pagamento(
     dados: RealizarPagamento,
     session: Session = Depends(pegar_sessao),
-    usuario: Usuario = Depends(verificar_token)
+    usuario: Usuario = Depends(exigir_perfil(["CLIENTE"]))
 ):
     
     if dados.forma_pagamento not in FORMAS_PAGAMENTO:

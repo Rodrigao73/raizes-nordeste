@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from dependencies import pegar_sessao, verificar_token
+from dependencies import pegar_sessao, verificar_token, exigir_perfil
 from schemas import PedidoSchema, AtualizarStatusSchema
 from models import Pedido, Usuario, Produto
 from datetime import datetime
@@ -16,6 +16,7 @@ pedidos_router = APIRouter(
 
 @pedidos_router.post("/criar-pedido", 
     status_code=201,
+    dependencies=[Depends(exigir_perfil(["CLIENTE"]))],
     description="OS CANAIS VÁLIDOS SÃO: APP, TOTEM, BALCAO, PICKUP E WEB."
 )
 async def criar_pedido(
@@ -77,7 +78,8 @@ async def criar_pedido(
 # Listar pedidos com filtros
 
 @pedidos_router.get("/listar-pedidos",
-    description= "Para o usuário realizar os filtros de busca"
+    description= "Para o usuário realizar os filtros de busca",
+    dependencies=[Depends(exigir_perfil(["ADMIN", "GERENTE", "CLIENTE","COZINHA"]))]
 )
 async def listar_pedidos(
     id_pedido: int = Query(default=None, description="Filtrar por ID do pedido"),
@@ -134,7 +136,8 @@ async def listar_pedidos(
 # Atualizar status do pedido
 
 @pedidos_router.patch("/{id_pedido}/status",
-    description= "OS STATUS PERMITIDOS SÃO: AGUARDANDO_PAGAMENTO, EM_PREPARACAO, PRONTO, ENTREGUE E CANCELADO."
+    description= "OS STATUS PERMITIDOS SÃO: AGUARDANDO_PAGAMENTO, EM_PREPARACAO, PRONTO, ENTREGUE E CANCELADO.",
+    dependencies=[Depends(exigir_perfil(["ADMIN", "GERENTE", "CLIENTE", "COZINHA"]))]
 )
 async def atualizar_status(
     id_pedido: int,

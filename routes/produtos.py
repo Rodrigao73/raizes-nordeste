@@ -76,7 +76,7 @@ async def listar_produtos(session: Session = Depends(pegar_sessao)):
 @produtos_router.patch(
     "/{produto_id}/estoque",
     description="NA OPERAÇÃO USE ENTRADA PARA ADICIONAR MAIS PRODUTOS E AJUSTE PARA DIMINUIR",
-    dependencies=[Depends(exigir_perfil(["ADMIN"]))]
+    dependencies=[Depends(exigir_perfil(["ADMIN","GERENTE"]))]
 )
 async def atualizar_estoque(
     produto_id: int,

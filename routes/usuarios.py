@@ -56,7 +56,7 @@ async def criar_conta(
 @usuarios_router.get(
     "/listar-usuarios",
     description="Para listar os usuários",
-    dependencies=[Depends(exigir_perfil(["ADMIN"]))]
+    dependencies=[Depends(exigir_perfil(["ADMIN","GERENTE"]))]
 )
 async def listar_usuarios(session: Session = Depends(pegar_sessao)):
 

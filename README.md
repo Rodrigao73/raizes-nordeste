@@ -313,8 +313,8 @@ A API utiliza o FastAPI Secutiry para controle de autenticação. Os seguintes p
 ```bash
 CLIENTE - Criar pedido, listar próprios pedidos, realizar pagamento e cancelar próprio pedido.
 ADMIN - Acesso total — cadastrar produtos, listar usuários, atualizar estoque e gerenciar pedidos.
-GERENTE - Atualizar estoque e status de pedidos. 
-COZINHA - Atualizar status de pedidos. 
+GERENTE - Listar usuários e pedidos, atualizar estoque e status de pedidos. 
+COZINHA - Atualizar status de pedidos e listar pedidos. 
 ```
 
 ---
