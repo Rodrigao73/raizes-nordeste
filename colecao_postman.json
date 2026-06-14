@@ -538,7 +538,7 @@
                 }
               ]
             },
-            "method": "GET",
+            "method": "PATCH",
             "header": [],
             "url": {
               "raw": "{{base_url}}/filiais/1/inativar",

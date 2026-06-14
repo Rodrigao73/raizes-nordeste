@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas import LoginSchema
 from dependencies import pegar_sessao
-from config import bcrypt_context, ALGORITHM, ACESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
+from config import bcrypt_context, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
 from models import Usuario
 from sqlalchemy.orm import Session
 from jose import jwt
@@ -16,7 +16,7 @@ login_router = APIRouter(
 
 def criar_token(usuario: Usuario) -> str:
     data_expiracao = datetime.now(timezone.utc) + timedelta(
-        minutes=ACESS_TOKEN_EXPIRE_MINUTES
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
     dados = {
         "sub": str(usuario.id),

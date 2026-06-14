@@ -1,6 +1,6 @@
 # Raizes do Nordeste
 
-A API foi constuida usando: Python 3.13, FastAPI, SQLAlchemy, JWT (python-jose), Bcrypt (passlib), Pydantic Uvicorn, SQLAlchemy e SQLite como banco de dados.
+A API foi constuida usando: Python 3.13, FastAPI, JWT (python-jose), Bcrypt (passlib), Pydantic, Uvicorn, SQLAlchemy e SQLite como banco de dados.
 
 **Aluno:** Rodrigo Oliveira  
 **RU:** 4826339  
@@ -64,7 +64,7 @@ Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
 SECRET_KEY=sua_chave_secreta_aqui  
 ALGORITHM=HS256  
-ACESS_TOKEN_EXPIRE_MINUTES=60  
+ACCESS_TOKEN_EXPIRE_MINUTES=60  
 
 ---
 
@@ -372,7 +372,7 @@ PATCH /filiais/{filial_id}/inativar - Para o SUPER_ADMIN cadastrar novas filiais
 
 ## Autenticação
 
-A API utiliza o FastAPI Secutiry para controle de autenticação. Os seguintes perfis estão disponíveis:
+A API utiliza o FastAPI Security para controle de autenticação. Os seguintes perfis estão disponíveis:
 
 ```bash
 SUPER_ADMIN - Acesso total à rede — cadastrar filiais, gerenciar todos os usuários e visualizar dados de todas as filiais.
