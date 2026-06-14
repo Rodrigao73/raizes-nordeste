@@ -16,7 +16,7 @@ pagamentos_router = APIRouter(
 @pagamentos_router.post("/realizar-pagamento",
     summary="Realizar Pagamento",
     dependencies=[Depends(exigir_perfil(["CLIENTE"]))],
-    description="AS FORMAS DE PAGAMENTOS ACEITAS SÃO: PIX, CARTAO_CREDITO, CARTAO_DEBITO, E DINHEIRO."
+    description="Para o CLIENTE realizar o pagamento do pedido. As formas de pagamento aceitas são: PIX, CARTAO_CREDITO, CARTAO_DEBITO, E DINHEIRO."
 )
 async def realizar_pagamento(
     dados: RealizarPagamento,

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from dependencies import pegar_sessao, verificar_token, exigir_perfil
+from dependencies import pegar_sessao, verificar_token, exigir_perfil, verificar_filial
 from schemas import PedidoSchema, AtualizarStatusSchema
-from models import Pedido, Usuario, Produto
+from models import Pedido, Usuario, Produto, Filial
 from datetime import datetime
 from constants import STATUS, CANAIS
 
@@ -13,11 +13,11 @@ pedidos_router = APIRouter(
 )
 
 # Criar pedido
-
-@pedidos_router.post("/criar-pedido", 
+@pedidos_router.post(
+    "/criar-pedido",
     status_code=201,
     dependencies=[Depends(exigir_perfil(["CLIENTE"]))],
-    description="OS CANAIS VÁLIDOS SÃO: APP, TOTEM, BALCAO, PICKUP E WEB."
+    description="Para o CLIENTE realizar os seus pedidos. Os canais válidos são: APP, TOTEM, BALCAO, PICKUP e WEB."
 )
 async def criar_pedido(
     pedido_schema: PedidoSchema,
@@ -31,15 +31,27 @@ async def criar_pedido(
             detail=f"Canal inválido. Use: {CANAIS}"
         )
 
+    filial = session.query(Filial).filter(
+        Filial.id == pedido_schema.filial_id,
+        Filial.ativa == 1
+    ).first()
+
+    if not filial:
+        raise HTTPException(
+            status_code=404,
+            detail="Filial inativa ou não encontrada"
+        )
+
     produto = session.query(Produto).filter(
         Produto.id == pedido_schema.produto,
+        Produto.filial == pedido_schema.filial_id,
         Produto.ativo == 1
     ).first()
 
     if not produto:
         raise HTTPException(
             status_code=404,
-            detail="Produto não encontrado"
+            detail="Produto não encontrado nessa filial"
         )
 
     if produto.estoque < pedido_schema.quantidade:
@@ -48,7 +60,7 @@ async def criar_pedido(
             detail=f"Estoque insuficiente. Disponível: {produto.estoque}"
         )
 
-    valor_total = produto.preco * pedido_schema.quantidade
+    valor_total = round(produto.preco * pedido_schema.quantidade, 2)
 
     novo_pedido = Pedido(
         usuario=usuario.id,
@@ -56,6 +68,7 @@ async def criar_pedido(
         quantidade=pedido_schema.quantidade,
         valor_total=valor_total,
         canal=pedido_schema.canal,
+        filial_id=pedido_schema.filial_id,
         status="AGUARDANDO_PAGAMENTO",
         data=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
@@ -65,9 +78,10 @@ async def criar_pedido(
     session.add(novo_pedido)
     session.commit()
     session.refresh(novo_pedido)
-    
+
     return {
         "id_pedido": novo_pedido.id,
+        "filial": filial.nome,
         "canal": novo_pedido.canal,
         "valor_total": novo_pedido.valor_total,
         "status": novo_pedido.status,
@@ -75,15 +89,16 @@ async def criar_pedido(
     }
 
 
-# Listar pedidos com filtros
+# Listar pedidos
 
-@pedidos_router.get("/listar-pedidos",
-    description= "Para o usuário realizar os filtros de busca",
-    dependencies=[Depends(exigir_perfil(["ADMIN", "GERENTE", "CLIENTE","COZINHA"]))]
+@pedidos_router.get(
+    "/listar-pedidos",
+    description="Para o usuário realizar os filtros dos pedidos.",
+    dependencies=[Depends(exigir_perfil(["ADMIN", "GERENTE", "CLIENTE", "COZINHA", "SUPER_ADMIN"]))]
 )
 async def listar_pedidos(
+    filial_id: int = Query(default=None, description="Filtrar por filial"),
     id_pedido: int = Query(default=None, description="Filtrar por ID do pedido"),
-    id_usuario: int = Query(default=None, description="Filtrar por ID do usuário"),
     canal: str = Query(default=None, description="Filtrar por canal"),
     status: str = Query(default=None, description="Filtrar por status"),
     session: Session = Depends(pegar_sessao),
@@ -91,14 +106,28 @@ async def listar_pedidos(
 ):
     query = session.query(Pedido)
 
+    if usuario.perfil == "SUPER_ADMIN":
+        resultado = session.query(Usuario).all()
     if usuario.perfil == "CLIENTE":
         query = query.filter(Pedido.usuario == usuario.id)
-    else:
-        if id_usuario:
-            query = query.filter(Pedido.usuario == id_usuario)
+        if id_pedido:
+            query = query.filter(Pedido.id == id_pedido)
 
-    if id_pedido:
-        query = query.filter(Pedido.id == id_pedido)
+    elif usuario.perfil in ["ADMIN", "GERENTE", "COZINHA"]:
+        query = query.filter(Pedido.filial == usuario.filial)
+        if filial_id and filial_id != usuario.filial:
+            raise HTTPException(
+                status_code=403,
+                detail="Você só tem acesso aos pedidos da sua filial"
+            )
+        if id_pedido:
+            query = query.filter(Pedido.id == id_pedido)
+
+    else:
+        if filial_id:
+            query = query.filter(Pedido.filial == filial_id)
+        if id_pedido:
+            query = query.filter(Pedido.id == id_pedido)
 
     if canal:
         if canal not in CANAIS:
@@ -128,15 +157,18 @@ async def listar_pedidos(
             "valor_total": p.valor_total,
             "status": p.status,
             "canal": p.canal,
+            "filial_id": p.filial,
             "data": p.data
         })
 
     return pedidos
 
+
 # Atualizar status do pedido
 
-@pedidos_router.patch("/{id_pedido}/status",
-    description= "OS STATUS PERMITIDOS SÃO: AGUARDANDO_PAGAMENTO, EM_PREPARACAO, PRONTO, ENTREGUE E CANCELADO.",
+@pedidos_router.patch(
+    "/{id_pedido}/status",
+    description="Para atualizar o status do pedido. Os status permitidos são: AGUARDANDO_PAGAMENTO, EM_PREPARACAO, PRONTO, ENTREGUE E CANCELADO.",
     dependencies=[Depends(exigir_perfil(["ADMIN", "GERENTE", "CLIENTE", "COZINHA"]))]
 )
 async def atualizar_status(
@@ -162,6 +194,9 @@ async def atualizar_status(
             detail="Pedido não encontrado"
         )
 
+    if usuario.perfil in ["ADMIN", "GERENTE", "COZINHA"]:
+        verificar_filial(usuario, pedido.filial)
+
     if usuario.perfil == "CLIENTE":
         if pedido.usuario != usuario.id:
             raise HTTPException(
@@ -181,7 +216,6 @@ async def atualizar_status(
         produto = session.query(Produto).filter(
             Produto.id == pedido.produto
         ).first()
-
         if produto:
             produto.estoque += pedido.quantidade
 

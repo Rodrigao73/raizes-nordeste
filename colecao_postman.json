@@ -468,6 +468,95 @@
       ]
     },
     {
+      "name": "Filiais",
+      "item": [
+        {
+          "name": "Cadastrar Filial",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": " {{token}} (token de SUPER_ADMIN)",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nome\": \"Raízes do Nordeste\",\r\n    \"cidade\": \"Salvador\",\r\n    \"estado\": \"BA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/filiais/cadastrar-filial",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "filiais",
+                "cadastrar-filial"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar filiais",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/filiais/listar-filiais",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "filiais",
+                "listar-filiais"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inativar filial",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": " {{token}} (token de SUPER_ADMIN)",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/filiais/1/inativar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "filiais",
+                "1",
+                "inativar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Erros",
       "item": [
         {
@@ -609,6 +698,12 @@
           "response": []
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_064g",
+      "secret": true
     }
   ]
 }

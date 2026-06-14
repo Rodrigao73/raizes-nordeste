@@ -45,7 +45,7 @@ def autenticar_usuario(email: str, senha: str, session: Session):
 
 @login_router.post("/",
     summary="Login",
-    description="usuário administrador: admin@admin.com / senha: admin"    
+    description="Para realizar o login"    
 )
 async def login(
     dados: LoginSchema,

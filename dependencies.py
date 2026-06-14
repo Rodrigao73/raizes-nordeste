@@ -63,3 +63,15 @@ def exigir_perfil(perfis_autorizados: list):
         return usuario
         
     return verificar
+
+# Verifica se usuário tem acesso à filial
+
+def verificar_filial(usuario: Usuario, filial_id: int):
+    if usuario.perfil == "SUPER_ADMIN":
+        return True
+    if usuario.filial != filial_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Você só tem acesso aos dados da sua filial"
+        )
+    return True

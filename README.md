@@ -116,7 +116,7 @@ GET /usuarios/listar-usuarios - Utilizado para administradores listarem as conta
         "nome": "Carlos",
         "email": "Carlos@example.com",
         "perfil": "ADMIN",
-        "ativo": "0"
+        "ativo": "1"
     }
 ]
 ```
@@ -131,7 +131,8 @@ POST /usuarios/criar-conta - Utilizado para criar as contas de usuários.
         "nome": "Lucas",
         "email": "Lucas@example.com",
 	    "senha": "123",
-        "perfil": "CLIENTE"
+        "perfil": "CLIENTE",
+        "filial_id": 0
     }
 ]
 ```
@@ -173,14 +174,16 @@ GET /produtos/listar-produtos - Utilizado para os usuários visualizarem o que t
         "nome": "Cuscuz",
         "descricao": "Com ovo e manteiga",
         "preco": 10,
-        "estoque": 30
+        "estoque": 30,
+        "filial_id": 1
     },
     {
         "id": 2,
         "nome": "Tapioca",
         "descricao": "Com queijo",
         "preco": 5,
-        "estoque": 10
+        "estoque": 10,
+        "filial_id": 2
     }
 ]
 ```
@@ -220,8 +223,8 @@ PATCH /produtos/{produto_id}/inativar - Para os administradores inativarem produ
     {
         "mensagem": "O produto: Tapioca foi inativado com sucesso"
     }
-```
 ]
+```
 
 **GET PEDIDOS**
 
@@ -231,13 +234,25 @@ GET /pedidos/listar-pedidos - Utilizado para administradores listarem todos os p
 [
     {
         "id": 1,
-        "usuario_id": 1,
+        "usuario_id": 5,
         "produto_id": 1,
-        "quantidade": 2,
-        "valor_total": 25.80,
-        "status": "AGUARDANDO_PAGAMENTO",
+        "quantidade": 1,
+        "valor_total": 30.99,
+        "status": "ENTREGUE",
         "canal": "APP",
-        "data": "2026-06-06 18:21:00"
+        "filial_id": 1,
+        "data": "2026-06-13 13:35:22"
+    },
+    {
+        "id": 2,
+        "usuario_id": 5,
+        "produto_id": 1,
+        "quantidade": 1,
+        "valor_total": 30.99,
+        "status": "EM_PREPARACAO",
+        "canal": "APP",
+        "filial_id": 1,
+        "data": "2026-06-13 13:35:33"
     }
 ]
 ```
@@ -249,14 +264,10 @@ POST /pedidos/criar-pedido - Utilizado para criar os pedidos no sistema.
 ```json
 [
     {
-        "id": 1,
-        "usuario_id": 1,
-        "produto_id": 1,
-        "quantidade": 1,
-        "valor_total": 70,
-        "status": "ENTREGUE",
+        "produto": 4,
+        "quantidade": 2,
         "canal": "APP",
-        "data": "2026-06-06 18:21:00"
+        "filial_id": 1
     }
 ]
 ```
@@ -293,16 +304,69 @@ POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
     }
 ]
 ```
+
+**GET FILIAIS**
+
+GET /filiais/listar-filiais - Lista todas as filiais ativas.
+
+```json
+[
+    {
+        "id": 1,
+        "nome": "Raizes do Nordeste",
+        "cidade": "Salvador",
+        "estado": "BA"
+  },
+  {
+        "id": 2,
+        "nome": "Raizes do Nordeste",
+        "cidade": "Recife",
+        "estado": "PE"
+  }
+]
+```
+
+**POST FILIAIS**
+
+POST /filiais/cadastrar-filial - Para o SUPER_ADMIN cadastrar novas filiais.
+
+```json
+[
+    {
+        "nome": "Raizes do Nordeste",
+        "cidade": "Salvador",
+        "estado": "BA"
+    }
+]
+```
+
+**PATCH FILIAIS**
+
+PATCH /filiais/{filial_id}/inativar - Para o SUPER_ADMIN cadastrar novas filiais.
+
+```json
+[
+    {
+    "mensagem": " A filial Raizes do Nordeste - PE foi inativada com sucesso"
+    }
+]
+```
 ---
 
 ## Fluxo principal
 
-1. Cadastre um usuário em `POST /usuarios/criar-conta`
-2. Faça login em `POST /usuarios/login`
+1. Cadastre um SUPER_ADMIN em `POST /usuarios/criar-conta` (Não é necessário informar filial)
+2. Faça login com SUPER_ADMIN em `POST /login`
 3. Copie o token e clique em **Authorize** no Swagger
-4. Crie um pedido em `POST /pedidos/`
-5. Realize o pagamento em `POST /pagamentos/realizar-pagamento/`
-6. Acompanhe o status em `GET /pedidos/`
+4. Cadastre as filiais em `POST /filiais/cadastrar-filial`
+5. Cadastre um ADMIN vinculado a uma filial em `POST /usuarios/criar-conta`
+6. Faça login com ADMIN e cadastre produtos da filial em `POST /produtos/cadastrar-produto`
+7. Cadastre um CLIENTE em `POST /usuarios/criar-conta`
+8. Faça login com CLIENTE
+9. Liste produtos da filial em `GET /produtos/listar-produtos?filial_id=1`
+10. Crie um pedido em `POST /pedidos/criar-pedido`
+11. Realize o pagamento em `POST /pagamentos/realizar-pagamento/`
+12. Acompanhe o status em `GET /pedidos/listar-pedidos`
 
 ---
 
@@ -311,10 +375,11 @@ POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
 A API utiliza o FastAPI Secutiry para controle de autenticação. Os seguintes perfis estão disponíveis:
 
 ```bash
+SUPER_ADMIN - Acesso total à rede — cadastrar filiais, gerenciar todos os usuários e visualizar dados de todas as filiais.
 CLIENTE - Criar pedido, listar próprios pedidos, realizar pagamento e cancelar próprio pedido.
-ADMIN - Acesso total — cadastrar produtos, listar usuários, atualizar estoque e gerenciar pedidos.
-GERENTE - Listar usuários e pedidos, atualizar estoque e status de pedidos. 
-COZINHA - Atualizar status de pedidos e listar pedidos. 
+ADMIN - Gerencia sua filial — cadastrar produtos, listar usuários, atualizar estoque e gerenciar pedidos.
+GERENTE - Listar usuários e pedidos, atualizar estoque e status de pedidos da sua filial. 
+COZINHA - Atualizar status de pedidos e listar pedidos da sua filial. 
 ```
 
 ---
