@@ -1,4 +1,4 @@
-# Raizes do Nordeste
+# RAÍZES DO NORDESTE
 
 A API foi constuida usando: Python 3.13, FastAPI, JWT (python-jose), Bcrypt (passlib), Pydantic, Uvicorn, SQLAlchemy e SQLite como banco de dados.
 
