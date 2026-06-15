@@ -337,7 +337,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"produto\": 1,\r\n    \"quantidade\": 2,\r\n    \"canal\": \"TOTEM\"\r\n}",
+              "raw": "{\r\n    \"produto\": 1,\r\n    \"quantidade\": 1,\r\n    \"canal\": \"APP\",\r\n    \"filial_id\": 1,\r\n    \"usar_pontos\": 10\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -460,6 +460,76 @@
               "path": [
                 "pagamentos",
                 "realizar-pagamento"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Fidelização",
+      "item": [
+        {
+          "name": "Aderir ao programa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": " {{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"aprovacao\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/fidelidade/aderir",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fidelidade",
+                "aderir"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar saldo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": " {{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fidelidade/saldo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fidelidade",
+                "saldo"
               ]
             }
           },

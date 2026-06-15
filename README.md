@@ -305,6 +305,34 @@ POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
 ]
 ```
 
+**GET FIDELIZACAO**
+
+GET /fidelizacao/saldo - Para o cliente consultar seus pontos.
+
+```json
+[
+    {
+        "usuario_id": 4,
+        "pontos_acumulados": 154,
+        "pontos_trocados": 125,
+        "pontos_disponiveis": 29,
+        "data_adesao": "2026-06-14 20:47:57"
+    }
+]
+```
+
+**POST FIDELIZACAO**
+
+POST /fidelizacao/aderir - Para o cliente aderir ao programa de fidelização.
+
+```json
+[
+    {
+        "aprovacao": true    
+    }
+]
+```
+
 **GET FILIAIS**
 
 GET /filiais/listar-filiais - Lista todas as filiais ativas.
@@ -363,10 +391,13 @@ PATCH /filiais/{filial_id}/inativar - Para o SUPER_ADMIN cadastrar novas filiais
 6. Faça login com ADMIN e cadastre produtos da filial em `POST /produtos/cadastrar-produto`
 7. Cadastre um CLIENTE em `POST /usuarios/criar-conta`
 8. Faça login com CLIENTE
-9. Liste produtos da filial em `GET /produtos/listar-produtos?filial_id=1`
-10. Crie um pedido em `POST /pedidos/criar-pedido`
-11. Realize o pagamento em `POST /pagamentos/realizar-pagamento/`
-12. Acompanhe o status em `GET /pedidos/listar-pedidos`
+9. Adira ao programa de fidelização em `POST /fidelizacao/aderir`
+10. Liste produtos da filial em `GET /produtos/listar-produtos?filial_id=1`
+11. Crie um pedido em `POST /pedidos/criar-pedido`
+12. Realize o pagamento em `POST /pagamentos/realizar-pagamento/`
+Consulte pontos acumulados em `GET /fidelizacao/saldo`
+13. Acompanhe o status em `GET /pedidos/listar-pedidos`
+14. No próximo pedido, informe `usar_pontos` para aplicar desconto
 
 ---
 

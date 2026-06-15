@@ -84,3 +84,20 @@ class Produto(Base):
         self.estoque = estoque
         self.filial = filial_id
         self.ativo = ativo
+
+class Fidelizacao(Base):
+    __tablename__ = "fidelizacao"
+
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
+    usuario_id = Column("usuario_id", Integer, ForeignKey("usuarios.id"), nullable=False)
+    pontos_acumulados = Column("pontos_acumulados", Integer, nullable=False, default=0)
+    pontos_trocados = Column("pontos_trocados", Integer, nullable=False, default=0)
+    aprovacao = Column("aprovacao", Integer, nullable=False, default=0)
+    data_adesao = Column("data_adesao", String, nullable=True)
+
+    def __init__(self, usuario_id, aprovacao=0):
+        self.usuario_id = usuario_id
+        self.pontos_acumulados = 0
+        self.pontos_trocados = 0
+        self.aprovacao = aprovacao
+        self.data_adesao = None

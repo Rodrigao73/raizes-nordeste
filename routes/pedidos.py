@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from dependencies import pegar_sessao, verificar_token, exigir_perfil, verificar_filial
 from schemas import PedidoSchema, AtualizarStatusSchema
-from models import Pedido, Usuario, Produto, Filial
+from models import Pedido, Usuario, Produto, Filial, Fidelizacao
 from datetime import datetime
 from constants import STATUS, CANAIS
 
@@ -62,6 +62,36 @@ async def criar_pedido(
 
     valor_total = round(produto.preco * pedido_schema.quantidade, 2)
 
+    if pedido_schema.usar_pontos and pedido_schema.usar_pontos > 0:
+        fidelizacao = session.query(Fidelizacao).filter(
+            Fidelizacao.usuario_id == usuario.id,
+            Fidelizacao.aprovacao == 1
+        ).first()
+
+        if not fidelizacao:
+            raise HTTPException(
+                status_code=409,
+                detail="Você ainda não está cadastrado no programa de fidelidade"
+            )
+
+        pontos_disponiveis = (
+            fidelizacao.pontos_acumulados - fidelizacao.pontos_trocados
+        )
+
+        if pedido_schema.usar_pontos > pontos_disponiveis:
+            raise HTTPException(
+                status_code=409,
+                detail=f"A quantidade de pontos é insuficiente. Disponível: {pontos_disponiveis}"
+            )
+
+        desconto = round(pedido_schema.usar_pontos * 0.05, 2)
+
+        desconto = min(desconto, valor_total)
+
+        valor_total = round(valor_total - desconto, 2)
+
+        fidelizacao.pontos_trocados += pedido_schema.usar_pontos
+
     novo_pedido = Pedido(
         usuario=usuario.id,
         produto=pedido_schema.produto,
@@ -84,6 +114,7 @@ async def criar_pedido(
         "filial": filial.nome,
         "canal": novo_pedido.canal,
         "valor_total": novo_pedido.valor_total,
+        "desconto_aplicado": round(pedido_schema.usar_pontos * 0.05, 2) if pedido_schema.usar_pontos else 0,
         "status": novo_pedido.status,
         "mensagem": "Pedido criado com sucesso"
     }

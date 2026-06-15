@@ -18,6 +18,11 @@ class PedidoSchema(BaseModel):
     quantidade: int
     canal: str
     filial_id: int
+    usar_pontos: Optional[int] = Field (
+        default=0,
+        ge=0,
+        description="Quantidade de pontos para usar como desconto"
+    )
   
     class Config:
         from_attributes = True
@@ -68,6 +73,12 @@ class FilialSchema(BaseModel):
     nome: str
     cidade: str
     estado: str
+
+    class Config:
+        from_attributes = True
+
+class AderirFidelizacaoSchema(BaseModel):
+    aprovacao: bool
 
     class Config:
         from_attributes = True

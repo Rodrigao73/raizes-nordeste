@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import verificar_token, pegar_sessao, exigir_perfil
 from schemas import RealizarPagamento
-from models import Usuario, Pedido
-from constants import FORMAS_PAGAMENTO
+from models import Usuario, Pedido, Fidelizacao
+from constants import FORMAS_PAGAMENTO, PONTOS_POR_REAL
+
 import random
 
 pagamentos_router = APIRouter(
@@ -53,6 +54,14 @@ async def realizar_pagamento(
     aprovado = random.random() > 0.25
 
     if aprovado:
+        fidelizacao = session.query(Fidelizacao).filter(
+            Fidelizacao.usuario_id == pedido.usuario
+        ).first()
+
+        if fidelizacao and fidelizacao.aprovacao == 1:
+            pontos_ganhos = int(pedido.valor_total * PONTOS_POR_REAL)
+            fidelizacao.pontos_acumulados += pontos_ganhos
+
         novo_status = "EM_PREPARACAO"
         resultado = "APROVADO"
 

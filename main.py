@@ -26,6 +26,7 @@ from routes.produtos import produtos_router, produtos_publico_router
 from routes.usuarios import usuarios_router
 from routes.login import login_router
 from routes.filiais import filiais_router
+from routes.fidelizacao import fidelizacao_router
 
 @app.get(
     "/",
@@ -45,5 +46,6 @@ app.include_router(login_router)
 app.include_router(produtos_router)
 app.include_router(pedidos_router)
 app.include_router(pagamentos_router)
+app.include_router(fidelizacao_router)
 app.include_router(produtos_publico_router)
 app.include_router(filiais_router)
