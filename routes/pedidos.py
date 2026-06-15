@@ -13,6 +13,7 @@ pedidos_router = APIRouter(
 )
 
 # Criar pedido
+
 @pedidos_router.post(
     "/criar-pedido",
     status_code=201,
@@ -137,8 +138,6 @@ async def listar_pedidos(
 ):
     query = session.query(Pedido)
 
-    if usuario.perfil == "SUPER_ADMIN":
-        resultado = session.query(Usuario).all()
     if usuario.perfil == "CLIENTE":
         query = query.filter(Pedido.usuario == usuario.id)
         if id_pedido:

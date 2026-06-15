@@ -4,7 +4,6 @@ from dependencies import verificar_token, pegar_sessao, exigir_perfil
 from schemas import RealizarPagamento
 from models import Usuario, Pedido, Fidelizacao
 from constants import FORMAS_PAGAMENTO, PONTOS_POR_REAL
-
 import random
 
 pagamentos_router = APIRouter(

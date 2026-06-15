@@ -495,12 +495,12 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/fidelidade/aderir",
+              "raw": "{{base_url}}/fidelizacao/aderir",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "fidelidade",
+                "fidelizacao",
                 "aderir"
               ]
             }
@@ -523,12 +523,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/fidelidade/saldo",
+              "raw": "{{base_url}}/fidelizacao/saldo",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "fidelidade",
+                "fidelizacao",
                 "saldo"
               ]
             }
@@ -724,7 +724,7 @@
                 }
               ]
             },
-            "method": "GET",
+            "method": "PATCH",
             "header": [],
             "url": {
               "raw": "{{base_url}}/produtos/999/estoque",

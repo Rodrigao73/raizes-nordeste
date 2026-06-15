@@ -4,7 +4,6 @@ from dependencies import pegar_sessao, verificar_token, exigir_perfil
 from schemas import AderirFidelizacaoSchema
 from models import Fidelizacao, Usuario
 from datetime import datetime
-from constants import PONTOS_POR_REAL
 
 fidelizacao_router = APIRouter(
     prefix="/fidelizacao",

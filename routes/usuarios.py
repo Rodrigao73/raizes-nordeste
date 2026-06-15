@@ -121,7 +121,7 @@ async def inativar_usuario(
             detail="Usuário já está inativo"
         )
 
-    usuario.ativo = 0
+    alvo.ativo = 0
     session.commit()
 
     return {

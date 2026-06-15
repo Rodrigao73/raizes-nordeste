@@ -6,7 +6,7 @@ from models import Usuario
 from jose import jwt, JWTError
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-# Para garantir a abertura e fechamento correto do BD 
+# Abertura e fechamento correto do BD 
 
 def pegar_sessao():
 

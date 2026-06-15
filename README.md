@@ -165,7 +165,7 @@ POST /login/ - Utilizado para o usuário logar na sua conta
 
 **GET PRODUTOS**
 
-GET /produtos/listar-produtos - Utilizado para os usuários visualizarem o que tem disponível no estoque.
+GET /produtos/listar-produtos - Utilizado para A visualização do que tem disponível no estoque.
 
 ```json
 [
@@ -259,7 +259,7 @@ GET /pedidos/listar-pedidos - Utilizado para administradores listarem todos os p
 
 **POST PEDIDOS**
 
-POST /pedidos/criar-pedido - Utilizado para criar os pedidos no sistema.
+POST /pedidos/criar-pedido - Utilizado para os clientes criarem os pedidos no sistema.
 
 ```json
 [
@@ -274,7 +274,7 @@ POST /pedidos/criar-pedido - Utilizado para criar os pedidos no sistema.
 
 **PATCH PEDIDOS**
 
-PATCH /pedidos/{id_pedido}/status - Utilizado para administradores, usuários, gerentes e a a equipe da cozinha para alterar o status do pedido.
+PATCH /pedidos/{id_pedido}/status - Utilizado para administradores, clientes, gerentes e a equipe da cozinha para alterar o status do pedido.
 
 ```json
 [
@@ -289,7 +289,7 @@ PATCH /pedidos/{id_pedido}/status - Utilizado para administradores, usuários, g
 
 **POST PAGAMENTOS**
 
-POST /pagamentos/realizar-pagamento - Utilizado para realizar os pagamentos.
+POST /pagamentos/realizar-pagamento - Utilizado para os clintes realizarem os pagamentos.
 
 ```json
 [
@@ -395,9 +395,9 @@ PATCH /filiais/{filial_id}/inativar - Para o SUPER_ADMIN cadastrar novas filiais
 10. Liste produtos da filial em `GET /produtos/listar-produtos?filial_id=1`
 11. Crie um pedido em `POST /pedidos/criar-pedido`
 12. Realize o pagamento em `POST /pagamentos/realizar-pagamento/`
-Consulte pontos acumulados em `GET /fidelizacao/saldo`
-13. Acompanhe o status em `GET /pedidos/listar-pedidos`
-14. No próximo pedido, informe `usar_pontos` para aplicar desconto
+13. Consulte pontos acumulados em `GET /fidelizacao/saldo`
+14. Acompanhe o status em `GET /pedidos/listar-pedidos`
+15. No próximo pedido, informe `usar_pontos` para aplicar desconto
 
 ---
 
