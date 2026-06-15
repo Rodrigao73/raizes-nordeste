@@ -59,6 +59,12 @@ async def login(
             detail="E-mail ou senha inválidos"
         )
 
+    if not usuario.ativo:
+        raise HTTPException(
+            status_code=403,
+            detail="Usuário inativo. Entre em contato com o administrador."
+        )
+
     token = criar_token(usuario)
 
     return {

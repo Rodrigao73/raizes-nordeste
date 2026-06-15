@@ -139,25 +139,33 @@ async def listar_pedidos(
     query = session.query(Pedido)
 
     if usuario.perfil == "CLIENTE":
-        query = query.filter(Pedido.usuario == usuario.id)
-        if id_pedido:
-            query = query.filter(Pedido.id == id_pedido)
+        query = query.filter(Pedido.usuario == usuario.id) 
+
+    if filial_id:
+        query = query.filter(Pedido.filial == filial_id)
 
     elif usuario.perfil in ["ADMIN", "GERENTE", "COZINHA"]:
+
+        if not usuario.filial:
+            raise HTTPException(
+                status_code=403,
+                detail="Usuário sem filial associada. Entre em contato com o administrador."
+            )
+
         query = query.filter(Pedido.filial == usuario.filial)
+
         if filial_id and filial_id != usuario.filial:
             raise HTTPException(
                 status_code=403,
                 detail="Você só tem acesso aos pedidos da sua filial"
             )
-        if id_pedido:
-            query = query.filter(Pedido.id == id_pedido)
 
     else:
         if filial_id:
             query = query.filter(Pedido.filial == filial_id)
-        if id_pedido:
-            query = query.filter(Pedido.id == id_pedido)
+
+    if id_pedido:
+        query = query.filter(Pedido.id == id_pedido)
 
     if canal:
         if canal not in CANAIS:
@@ -192,7 +200,6 @@ async def listar_pedidos(
         })
 
     return pedidos
-
 
 # Atualizar status do pedido
 

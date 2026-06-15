@@ -55,7 +55,7 @@ source venv/bin/activate
 ### 3. Instale as dependências
 
 ```bash
-pip install fastapi uvicorn sqlalchemy python-jose passlib bcrypt python-dotenv pydantic
+pip install fastapi uvicorn sqlalchemy python-jose passlib bcrypt bcrypt==4.0.0 python-dotenv pydantic
 ```
 
 ### 4. Configure as variáveis de ambiente
