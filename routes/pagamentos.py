@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import verificar_token, pegar_sessao, exigir_perfil
-from schemas import RealizarPagamento
+from schemas import RealizarPagamentoSchema
 from models import Usuario, Pedido, Fidelizacao
 from constants import FORMAS_PAGAMENTO, PONTOS_POR_REAL
 import random
@@ -19,7 +19,7 @@ pagamentos_router = APIRouter(
     description="Para o CLIENTE realizar o pagamento do pedido. As formas de pagamento aceitas são: PIX, CARTAO_CREDITO, CARTAO_DEBITO, E DINHEIRO."
 )
 async def realizar_pagamento(
-    dados: RealizarPagamento,
+    dados: RealizarPagamentoSchema,
     session: Session = Depends(pegar_sessao),
     usuario: Usuario = Depends(exigir_perfil(["CLIENTE"]))
 ):

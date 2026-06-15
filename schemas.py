@@ -56,7 +56,7 @@ class AtualizarPedidoSchema(BaseModel):
     class Config:
         from_attributes = True
 
-class RealizarPagamento(BaseModel):
+class RealizarPagamentoSchema(BaseModel):
     id: int
     forma_pagamento: str
 
